@@ -2,26 +2,20 @@ import { Button, Text, View } from "react-native";
 import TextInput from "@/components/TextInput";
 import colors from "@/styles/Colors";
 import { useState } from "react";
-import axios from "axios";
 
-const apiUrl = 'http://192.168.0.4:3000/response' //172.27.133.98
-const localhostUrl = 'http://localhost:3000/response'
+import api from "@/lib/api";
+
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
+import { fetchContent } from "@/store/content.slice";
 
 export default function Response () {
   const [text, setText] = useState('')
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleSend = async () => {
-    const connection = async (url:string) => {
-      await axios.post(url, { text })
-      setText('')
-    }
-
-    try {
-      await connection(apiUrl);
-    } catch (error) {
-      await connection(localhostUrl);
-      console.error('Error sending data:', error);
-    }
+    await api.sendResponse(text)
+    dispatch(fetchContent())
   }
 
   return (

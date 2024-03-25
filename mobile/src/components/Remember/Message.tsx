@@ -1,28 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Text, View } from "react-native";
-import axios from "axios";
 
-const apiUrl = 'http://192.168.0.4:3000/message' //172.27.133.98
-const localhostUrl = 'http://localhost:3000/message'
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
+import { fetchContent } from "@/store/content.slice";
+
+
 
 export default function Message () {
-  const [messages, setMessages] = useState<string[]>([])
+  const { messages } = useSelector((state: RootState) => state.content)
+  const dispatch = useDispatch<AppDispatch>()
 
-  useEffect(() => { fetchData(); }, []);
-
-  const fetchData = async () => {
-    const connection = async (url:string) => {
-      const response = await axios.get(url);
-      setMessages(response.data);
-    }
-    
-    try {
-      await connection(apiUrl);
-    } catch (error) {
-      await connection(localhostUrl);
-      console.error('Error fetching data:', error);
-    }
-  };
+  useEffect(() => { 
+    dispatch(fetchContent())
+  }, [dispatch]);
 
   return (
     <View className="w-full flex flex-col gap-3">
