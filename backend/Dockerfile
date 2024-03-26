@@ -3,13 +3,14 @@ FROM node:latest
 WORKDIR /
 
 COPY package.json .
+COPY package-lock.json .
 
-RUN npm install
+RUN npm ci
 
 COPY . .
 
-RUN npx prisma migrate deploy
-
 EXPOSE 3000
+
+RUN npx prisma migrate dev
 
 CMD ["npm", "start"]
